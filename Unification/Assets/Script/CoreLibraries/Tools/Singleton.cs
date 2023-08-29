@@ -3,39 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Singleton<T> where T : Singleton<T>, new()
+public abstract class Singleton<T> where T : class, new()
 {
     protected bool m_Init = false;
-
+    private static readonly T m_Instance = new T();
 
     protected Singleton()
     {
-        if (null != m_Instance)
-        {
-            throw new Exception(m_Instance.ToString() + @" can not be create again.");
-        }
-
-        m_Init = false;
+        if ((object) Singleton<T>.m_Instance != null)
+            throw new Exception(Singleton<T>.m_Instance.ToString() + " can not be created again.");
+        this.m_Init = false;
     }
-
-    private static T m_Instance;
-    private static readonly object _lock = new object();
-
-    public static T Instance
+    static Singleton()
     {
-        get
-        {
-            if (m_Instance != null)
-                return m_Instance;
-            lock (_lock)
-            {
-                m_Instance ??= new T();
-                m_Instance.Init();
-            }
-
-            return m_Instance;
-        }
     }
+    public static T Instance => Singleton<T>.m_Instance;
 
     protected virtual void OnInit()
     {
@@ -47,19 +29,17 @@ public abstract class Singleton<T> where T : Singleton<T>, new()
 
     public void Init()
     {
-        if (!m_Init)
-        {
-            m_Init = true;
-            OnInit();
-        }
+        if (this.m_Init)
+            return;
+        this.m_Init = true;
+        this.OnInit();
     }
 
     public void UnInit()
     {
-        if (m_Init)
-        {
-            m_Init = false;
-            OnUnInit();
-        }
+        if (!this.m_Init)
+            return;
+        this.m_Init = false;
+        this.OnUnInit();
     }
 }

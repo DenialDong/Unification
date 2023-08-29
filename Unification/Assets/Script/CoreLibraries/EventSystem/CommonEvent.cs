@@ -167,14 +167,14 @@ internal sealed class LongArrayEvent : HEvent
     }
 }
 
-internal class AnyEvent : HEvent
-{
-    public Google.Protobuf.WellKnownTypes.Any any { get; private set; }
-
-    public AnyEvent Set(HEventType et, Google.Protobuf.WellKnownTypes.Any any)
-    {
-        this.any = any;
-        EventType = et;
-        return this;
-    }
-}
+// internal class AnyEvent : HEvent
+// {
+//     public Google.Protobuf.WellKnownTypes.Any any { get; private set; }
+//
+//     public AnyEvent Set(HEventType et, Google.Protobuf.WellKnownTypes.Any any)
+//     {
+//         this.any = any;
+//         EventType = et;
+//         return this;
+//     }
+// }

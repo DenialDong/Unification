@@ -558,6 +558,7 @@
 "Assets/FarmingEngine/Scripts/UI/UISlot.cs"
 "Assets/FarmingEngine/Scripts/UI/UISlotPanel.cs"
 "Assets/FarmingEngine/Scripts/UI/XPBar.cs"
+"Assets/Script/testForAssetReference.cs"
 -langversion:9.0
 
 /deterministic

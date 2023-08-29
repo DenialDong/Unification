@@ -17,4 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/FarmingEngine/Scenes/Mine.unity
     guid: 15fe76674dc83bd4996b932a67120c3f
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 106aea5a1e6f2134fa6b6977611a3065,
+      type: 2}

@@ -210,6 +210,7 @@ m_ResolvedPackages:
     - 1.21.10
     - 1.21.12
     - 1.21.14
+    - 1.21.15
     compatible:
     - 1.19.19
     - 1.20.0
@@ -223,6 +224,7 @@ m_ResolvedPackages:
     - 1.21.10
     - 1.21.12
     - 1.21.14
+    - 1.21.15
     verified: 1.19.19
   dependencies:
   - name: com.unity.scriptablebuildpipeline
@@ -364,6 +366,7 @@ m_ResolvedPackages:
     - 2.0.3
     - 2.0.4
     - 2.0.5
+    - 2.0.7
     - 2.1.0-preview.3
     - 2.1.0-preview.5
     - 2.1.0-preview.6
@@ -381,6 +384,7 @@ m_ResolvedPackages:
     - 2.0.3
     - 2.0.4
     - 2.0.5
+    - 2.0.7
     - 2.1.0-preview.3
     - 2.1.0-preview.5
     - 2.1.0-preview.6
@@ -659,11 +663,13 @@ m_ResolvedPackages:
     - 2.0.16
     - 2.0.17
     - 2.0.18
+    - 2.0.20
     compatible:
     - 2.0.16
     - 2.0.17
     - 2.0.18
-    verified: 2.0.18
+    - 2.0.20
+    verified: 2.0.20
   dependencies:
   - name: com.unity.test-framework
     version: 1.1.9
@@ -913,6 +919,7 @@ m_ResolvedPackages:
     - 1.3.5
     - 1.3.7
     - 1.3.8
+    - 1.3.9
     - 2.0.1-exp.1
     - 2.0.1-exp.2
     - 2.0.1-pre.12
@@ -928,6 +935,7 @@ m_ResolvedPackages:
     - 1.3.5
     - 1.3.7
     - 1.3.8
+    - 1.3.9
     - 2.0.1-exp.1
     - 2.0.1-exp.2
     - 2.0.1-pre.12
@@ -1420,9 +1428,13 @@ m_ResolvedPackages:
     - 1.7.8
     - 1.8.0-pre.1
     - 1.8.0
+    - 1.9.0
+    - 1.9.1
     compatible:
     - 1.7.8
     - 1.8.0
+    - 1.9.0
+    - 1.9.1
     verified: 1.7.8
   dependencies:
   - name: com.unity.ugui
@@ -3570,6 +3582,7 @@ m_ResolvedPackages:
     - 1.8.2
     - 1.9.0
     - 1.10.1
+    - 1.11.0
     compatible:
     - 1.6.0
     - 1.7.0
@@ -3578,6 +3591,7 @@ m_ResolvedPackages:
     - 1.8.2
     - 1.9.0
     - 1.10.1
+    - 1.11.0
     verified: 1.6.0
   dependencies:
   - name: com.unity.modules.unitywebrequest
@@ -3695,6 +3709,8 @@ m_ResolvedPackages:
     - 1.21.3
     - 1.21.5
     - 1.21.7
+    - 1.21.8
+    - 1.21.9
     compatible:
     - 1.20.1
     - 1.20.2
@@ -3704,6 +3720,8 @@ m_ResolvedPackages:
     - 1.21.3
     - 1.21.5
     - 1.21.7
+    - 1.21.8
+    - 1.21.9
     verified: 1.20.2
   dependencies: []
   resolvedDependencies: []

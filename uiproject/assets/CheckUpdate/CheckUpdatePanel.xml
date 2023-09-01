@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="640,1280">
+  <displayList>
+    <image id="n1_orwc" name="n1" src="orwc6" fileName="img/change.png" xy="0,-60" size="640,1400">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <component id="n0_orwc" name="bar" src="orwc2" fileName="ProgressBarLoading.xml" xy="31,1137">
+      <relation target="" sidePair="center-center,bottom-bottom"/>
+      <ProgressBar max="100"/>
+    </component>
+    <text id="n2_9vzf" name="tipsLabel" xy="141,1104" size="348,38" fontSize="24" align="center" autoSize="none" text="开始更新&#xA;"/>
+    <text id="n3_9vzf" name="lab_Title" xy="137,291" size="348,51" fontSize="30" align="center" vAlign="middle" autoSize="none" text="资源检查&#xA;"/>
+  </displayList>
+</component>

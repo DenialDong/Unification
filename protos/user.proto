@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+//import "base.proto";
+package kop;
+option go_package = "./kop";
+
+message User {
+  int64 id = 1;
+  string name = 2;
+}
+
+// 登录参数 10001
+message Login {
+  string token = 1;
+}
+
+// 登录返回 20001
+message LoginResponse {
+  int32 code = 1;
+  string msg = 2;
+  User self = 3;
+}

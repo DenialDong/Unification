@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="gkk0ykz2">
+  <resources>
+    <component id="jtzd0" name="RoleLayer.xml" path="/" exported="true"/>
+    <image id="l3um1" name="bg_currency1.png" path="/images/"/>
+  </resources>
+  <publish name=""/>
+</packageDescription>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="0g7v8b65">
+  <resources>
+    <component id="iwgl0" name="CheckUpdatePanel.xml" path="/" exported="true"/>
+    <movieclip id="orwc1" name="pet.jta" path="/"/>
+    <component id="orwc2" name="ProgressBarLoading.xml" path="/"/>
+    <image id="orwc3" name="huawen1_png.png" path="/img/"/>
+    <image id="orwc4" name="huawen2_png.png" path="/img/"/>
+    <image id="orwc5" name="loading.png" path="/img/" duplicatePadding="true"/>
+    <image id="orwc6" name="change.png" path="/img/"/>
+    <image id="h98z8" name="btnimage.png" path="/img/"/>
+    <component id="9vzf9" name="MsgBoxDlg.xml" path="/" exported="true"/>
+    <component id="9vzfa" name="Button1.xml" path="/components/" exported="true"/>
+    <image id="9vzfb" name="checkUpdateBg.png" path="/img/"/>
+    <component id="9vzfc" name="WindowFrame.xml" path="/components/" exported="true"/>
+  </resources>
+  <publish name="" path="..\client\Unity\Assets\Resources\UIPackage\" packageCount="2"/>
+</packageDescription>

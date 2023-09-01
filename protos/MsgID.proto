@@ -1,0 +1,688 @@
+syntax = "proto3";
+
+
+
+option csharp_namespace = "kop.Proto";
+
+
+
+
+// code = (COMMAND_TYPE << 24) | (COMMAND_MODULE << 16) | ID
+enum COMMAND_CODE {
+  // 特殊指令(0x00000000 ~ 0x0000FFFF)
+  COMMAND             = 0;
+  ID_ErrorInfoReply   = 0x00000002;     // 错误消息码ID
+  ID_EchoRequest      = 0x00000003;     // Server Info
+  ID_EchoReply        = 0x00000004;
+
+  ID_HeartbeatRequest = 0x00000005;     // 大厅服和game服心跳检测
+  ID_HeartbeatReply   = 0x00000006;
+
+  ID_SceneHeartRequest = 0x00000007;     // 场景服和game服心跳检测
+  ID_SceneHeartReply   = 0x00000008;
+
+  ID_SceneActiveRequest       = 0x00000009;
+  ID_SceneActiveReply         = 0x0000000A;
+
+  // 用户登陆、账号相关(0x01010001 ~ 0x0101FFFF)
+  ID_ActiveRequest              = 0x01010001;     // 激活
+  ID_ActiveReply                = 0x01010002;
+  ID_LoginRequest               = 0x01010003;     // 登录
+  ID_LoginReply                 = 0x01010004;
+  ID_LogoutRequest              = 0x01010005;     // 登出
+  ID_LogoutReply                = 0x01010006;
+  ID_AccountBindRequest         = 0x01010007;     // 用户账号绑定
+  ID_AccountBindReply           = 0x01010008;
+  ID_AccountUnBindRequest       = 0x01010009;     // 用户账号解绑
+  ID_AccountUnBindReply         = 0x0101000A;
+  ID_CreateCharRoleRequest      = 0x0101000B;     // 用户创建区服角色
+  ID_CreateCharRoleReply        = 0x0101000C;
+  ID_CharListRequest            = 0x0101000D;     // 用户区服列表信息
+  ID_CharListReply              = 0x0101000E;
+  ID_EnterGameRequest           = 0x0101000F;     // 用户进入游戏
+  ID_EnterGameReply             = 0x01010010;
+  ID_SyncFuncStatus             = 0x01010011;     // 功能开启
+  ID_TimerSavePlayerNotify      = 0x01010012;     // 存盘
+  ID_TimerCheckActiveNotify     = 0x01010013;     // 心跳
+  ID_LeaveGameNotify            = 0x01010014;     // 玩家下线通知
+  ID_KickOffPlayerNotify        = 0x01010015;     // 踢用户通知
+  ID_SaveCustomizeRequest		= 0x01010016;	  // 客户端自定义的存储
+  ID_SaveCustomizeReply			= 0x01010017;
+  ID_LoadCustomizeRequest		= 0x01010018;	  // 加载客户端自定义
+  ID_LoadCustomizeReply			= 0x01010019;
+
+  ID_SyncBuildingsData        = 0x0101001A;     // 场景服务器同步建筑数据
+  ID_RewardsRequest         = 0x0101001B;     // 服务器间奖励
+  ID_RewardsReply           = 0x0101001C;
+  ID_DropItemsRequest         = 0x0101001D;     // 服务器间掉落
+  ID_DropItemsReply           = 0x0101001E;
+  ID_FightAttrSync            = 0x0101001F;
+
+  ID_EntityAttrRequest        = 0x01010020;   // 客户端查询
+  ID_EntityAttrReply          = 0x01010021;
+  ID_EntityAttrNotify         = 0x01010022;   // 服务器推送接口
+  ID_ECaleContextSync         = 0x01010023;   // 服务器变量通知
+  ID_ServerTimerNotify        = 0x01010024;   // 服务器Timer通知
+
+  // 编队系统(0x01020001 ~ 0x0102FFFF)
+  ID_TroopListRequest           = 0x01020001;     // 用户编队系统列表
+  ID_TroopListReply             = 0x01020002;
+  ID_TroopTrainRequest          = 0x01020003;     // 编队训练
+  ID_TroopTrainReply            = 0x01020004;
+  ID_TroopUseRequest            = 0x01020005;     // 编队使用(兵卡|军官的使用)
+  ID_TroopUseReply              = 0x01020006;
+  ID_TroopDelRequest            = 0x01020007;     // 编队删除(兵卡|军官的删除)
+  ID_TroopDelReply              = 0x01020008;
+  ID_TroopUnLockRequest         = 0x01020009;     // 编队解锁
+  ID_TroopUnLockReply           = 0x0102000A;
+  ID_TroopLockIsOrNotReply      = 0x0102000C;     // 编队解锁是否可达--主动推送
+  ID_TroopRefreshRequest        = 0x0102000D;     // 编队训练当前兵数最新消息
+  ID_TroopRefreshReply          = 0x0102000E;
+
+  // 兵卡系统(0x01030001 ~ 0x0103FFFF)
+  ID_UnitsInfoRequest           = 0x01030001;     // 获取兵卡信息
+  ID_UnitsInfoReply             = 0x01030002;
+  ID_UpgradeUnitsRequest        = 0x01030003;     // 升级兵卡
+  ID_UpgradeUnitsReply          = 0x01030004;
+  ID_DisassemblyUnitsRequest    = 0x01030005;     // 兵卡拆解
+  ID_DisassemblyUnitsReply      = 0x01030006;
+  ID_RestorationUnitsRequest    = 0x01030007;     // 兵卡重置
+  ID_RestorationUnitsReply      = 0x01030008;
+  ID_RankLevelUnitsRequest      = 0x01030009;     // 兵卡军衔评级
+  ID_RankLevelUnitsReply        = 0x0103000A;
+  ID_UnitsStarUpgradeRequest    = 0x0103000B;     // 兵卡升星
+  ID_UnitsStarUpgradeReply      = 0x0103000C;
+
+
+  // 任务系统(0x01040001 ~ 0x0104FFFF)
+  ID_TasksRequest               = 0x01040001;     // 请求任务
+  ID_TasksReply                 = 0x01040002;
+  ID_CommitRequest              = 0x01040003;     // 提交任务
+  ID_CommitReply                = 0x01040004;
+  ID_AcceptRequest              = 0x01040005;     // 接受任务
+  ID_AcceptReply                = 0x01040006;
+  ID_InitChapterRequest         = 0x01040007;     //请求章节信息
+  ID_InitChapterReply           = 0x01040008;
+  ID_UnlockChapterRequest       = 0x01040009;     //解锁章节
+  ID_UnlockChapterReply         = 0x0104000A;
+  ID_ChapterRewardRequest       = 0x0104000B;     //领取章节奖励
+  ID_ChapterRewardReply         = 0x0104000C;
+  ID_TaskDetail                 = 0x0104000D;     //任务状态变化
+  ID_MutualNpcRequest           = 0x0104000E;     //客户端通知与哪个NPC交互
+  ID_KillEnemyRequest           = 0x0104000F;     //战斗服通知击杀指定敌人
+  ID_SurvivalNpcRequest         = 0x01040010;     //战斗服通知规定时间指定npc存活
+  ID_BuildAssignBuildRequest    = 0x01040011;     //建造指定数量指定城建建筑
+  ID_UpAssignBuildRequest       = 0x01040012;     //指定数量指定城建建筑达到指定等级
+  ID_UserEventNotify            = 0x01040013;     //通用用户事件广播消息
+  ID_DirectFinishTaskRequest    = 0x01040014;     //直接完成某个任务
+  ID_UnlockFogNotify            = 0x01040015;     //解锁制定数量的迷雾
+  ID_OccupyCampNpcNotify        = 0x01040016;     //占领营地NPC
+  ID_OccupyHighwayNotify        = 0x01040017;     //占领高速指挥所
+  ID_CrusadePVPCampNotify       = 0x01040018;     //占领PVP沙盘营地
+
+  // NPC 系统(0x01050001 ~ 0x0105FFFF)
+  ID_NpcListRequest             = 0x01050001;      //请求npc列表
+  ID_NpcListReply               = 0x01050002;
+  ID_NpcOpRequest               = 0x01050003;      //请求npc操作状态列表
+  ID_NpcOpReply                 = 0x01050004;
+  ID_UpgradeNpcRequest          = 0x01050005;      //请求npc状态更新  升级等
+  ID_UpgradeNpcReply            = 0x01050006;
+  ID_NpcInfoRequest             = 0x01050007;      //请求npc信息
+  ID_NpcInfo                    = 0x01050008;
+  ID_EnterMapRequest            = 0x01050009;
+  ID_EnterMapReply              = 0x0105000A;
+  ID_CreateBuildRequest			= 0x0105000B;		//建造建筑请求
+  ID_CreateBuildReply			= 0x0105000C;		//建造建筑回复   buildserver
+  ID_SceneCreateBuildReply		= 0x0105000D;		//场景中增加建筑回复
+  ID_SceneUpdateBuildReply		= 0x0105000E;		//场景建筑状态修改回复
+  //ID_SceneChangeNpcStatusRequest= 0x0105000F;		//修改场景中npc 建筑的  状态请求
+  ID_SceneAddNpcReply			= 0x01050010;		//增加npc回复
+  ID_SceneDeleteNpcReply		= 0x01050011;		//删除npc回复
+  ID_SceneChangeNpcStatusReply	= 0x01050012;		//修改npc状态回复
+
+
+
+
+
+  // 聊天系统(0x01060001 ~ 0x0106FFFF)
+  ID_ChannelListRequest         = 0x01060001;
+  ID_ChannelListReply           = 0x01060002;
+  ID_ChannelAttrRequest         = 0x01060003;
+  ID_ChannelInfo                = 0x01060004;
+  ID_CreateChannelRequest       = 0x01060005;
+  ID_CreateChannelReply         = 0x01060006;
+  ID_UpdateChannelRequest       = 0x01060007;
+  ID_UpdateChannelReply         = 0x01060008;
+  ID_RemoveChannelRequest       = 0x01060009;
+  ID_RemoveChannelReply         = 0x0106000A;
+  ID_ChannelMembersRequest      = 0x0106000B;
+  ID_ChannelMemberReply         = 0x0106000C;
+  ID_InviteMemberRequest        = 0x0106000D;
+  ID_InviteMemberReply          = 0x0106000E;
+  ID_RemoveMemberRequest        = 0x0106000F;
+  ID_RemoveMemberReply          = 0x01060010;
+  ID_FollowingMemberRequest     = 0x01060011;
+  ID_FollowingMemberReply       = 0x01060012;
+  ID_MemberDetailRequest        = 0x01060013;
+  ID_MemberDetailReply          = 0x01060014;
+  ID_ContentInfo                = 0x01060015;
+  ID_ChannelMessageReply        = 0x01060016;
+  ID_ChannelMsgInitRequest      = 0x01060017;
+  ID_ChannelMsgInitReply        = 0x01060018;
+  ID_RemoveChannelPlayerNotify  = 0x01060019;
+
+  // 背包与道具(0x01070001 ~ 0x0107FFFF)
+  ID_BagRequest                 = 0x01070001;      // 查询背包
+  ID_BagReply                   = 0x01070002;
+  ID_BatchUseRequest            = 0x01070003;      // 玩家批量使用道具
+  ID_BatchUseItemReply          = 0x01070004;
+  ID_AddItemsRequest            = 0x01070005;      // 增加玩家道具
+  ID_AddItemsReply              = 0x01070006;
+  ID_RemoveItemsRequest         = 0x01070007;      // 删除玩家道具
+  ID_RemoveItemsReply           = 0x01070008;
+  ID_BagRefreshReply            = 0x01070009;      // 推送最新包裹信息
+  ID_CommonUseBagReply          = 0x0107000A;      // 推送公共包裹消耗信息
+  ID_RewardsNotify              = 0x0107000B;      // 客户端奖励
+  ID_ResItemRequest             = 0x0107000C;      // 资源类型查询
+  ID_ResItemReply               = 0x0107000D;      // 资源类型恢复
+
+
+  // 邮件服务(0x01080001 ~ 0x0108FFFF)
+  ID_CreateMailRequest          = 0x01080001;//创建邮件
+  ID_CreateMailReply            = 0x01080002;
+  ID_ReadMailRequest            = 0x01080003;//读取邮件
+  ID_ReadMailReply              = 0x01080004;
+  ID_RemoveMailRequest          = 0x01080005;//删除邮件
+  ID_RemoveMailReply            = 0x01080006;
+  ID_MailListRequest            = 0x01080007;//邮件列表
+  ID_MailListReply              = 0x01080008;
+  ID_GetAttachRequest           = 0x01080009;//领取附件
+  ID_GetAttachReply             = 0x0108000A;
+  ID_MailRecvNotify             = 0x0108000B;//邮件通知
+  ID_GetMailUnionPlayerInfoRequest   = 0x0108000C;//邮件请求联盟玩家数据 联盟服
+  ID_GetMailUnionPlayerInfoReply     = 0x0108000D;
+  ID_GetMailAttachRequest       = 0x0108000E;//邮件请求发送奖励 游戏服
+  ID_GetMailAttachReply         = 0x0108000F;
+  ID_SendMailNotify             = 0x01080010;//通知邮件服发送邮件
+  ID_GetMailUnionInfoRequest    = 0x01080011;//通知联盟服获取联盟数据 联盟服
+  ID_GetMailUnionInfoReply      = 0x01080012;
+  ID_MailPlayerLoginNotify      = 0x01080013;//邮件监听玩家登录
+  ID_GetAllPlayerInfoRequest    = 0x01080014;//获取所有玩家数据 游戏服
+  ID_GetAllPlayerInfoReply      = 0x01080015;
+
+
+  //战斗场景相关(0x01090001 ~ 0x0109FFFF)
+  ID_LoadSceneRequest           = 0x01090001;      // Load Scene
+  ID_LoadSceneReply             = 0x01090002;
+  ID_FightSceneLoginRequest     = 0x01090003;      //战斗场景服连接大厅
+  ID_FightSceneLoginReply       = 0x01090004;      //大厅服返回给战斗场景服
+  ID_Client2GateInfo         	  = 0x01090005;      //玩家登陆战斗场景服
+  ID_Gate2FightInfo     	     	= 0x01090006;      //gate服告诉战斗服，玩家要进哪个战斗服
+  ID_Fight2GateInfo    	    	  = 0x01090007;      //战斗服返回gate服，玩家的信息
+  ID_Gate2ClientInfo     		    = 0x01090008;      //gate服转发战斗服返回的玩家信息
+  ID_EnterCampaignRequest  = 0x01090009;      //进入副本请求
+  ID_EnterCampaignReply    = 0x0109000A;      //进入副本响应
+  ID_ExitCampaignRequest   = 0x0109000B;      //退出副本请求
+  ID_ExitCampaignReply     = 0x0109000C;      //退出副本响应
+  ID_Scene2LogicPlayerLoginRequest    = 0x0109000D;//场景服通知大厅服玩家登录场景服请求
+  ID_Logic2ScenePlayerLoginReply      = 0x0109000E;//场景服通知大厅服玩家登录场景服响应
+  ID_SceneTroopTrainRequest      = 0x0109000F;     //大厅服通知场景服编队训练小兵请求
+  ID_SceneTroopTrainReply        = 0x01090010;     //场景服通知大厅服编队训练小兵响应
+  ID_SyncCampaignMileageRequest  = 0x01090011;//副本章节数据请求
+  ID_SyncCampaignMileageReplay   = 0x01090012;//副本章节数据响应
+  ID_CampaignRewardRequest   = 0x01090013;     //副本领取奖励请求
+  ID_CampaignRewardReplay    = 0x01090014;     //副本领取奖励响应
+  ID_SceneTeamsDataSync         = 0x01090015;     //场景小队数据同步
+  ID_SceneDismissTroopNotify    = 0x01090016;     //解散小队通知
+  ID_FightSceneLogoutRequest  = 0x01090017;
+  ID_FightSceneLogoutReply    = 0x01090018;
+  ID_SceneTroopInfoRequest    = 0x01090019;
+  ID_SceneTroopInfoReply      = 0x01090020;
+  ID_UnlockNextMapsRequest = 0x01090021;//解锁下一个个人沙盘
+  ID_UnlockNextMapsReply   = 0x01090022;
+  ID_SceneTroopListInfoRequest    = 0x01090023;
+  ID_SceneTroopListInfoReply      = 0x01090024;
+  ID_GetStageRewardRequest = 0x01090025;//获取战役奖励
+  ID_GetStageRewardReply = 0x01090026;
+  ID_StageRewardListRequest = 0x01090027;//获取战役已领取奖励列表
+  ID_StageRewardListReply = 0x01090028;
+
+  ID_TroopTeleportRequest       = 0x01090029;     // 服务器请求跨场景
+  ID_TroopTeleportReply         = 0x01090030;
+
+  // GM(0x010B0001 ~ 0x010BFFFF)
+  ID_GMRequest                  = 0x010B0001;     // gm指令
+  ID_GMReply                    = 0x010B0002;
+
+  // DB(0x010C0001 ~ 0x010CFFFF)
+  ID_DBLoadPlayerDataRequest 	= 0x010C0001;		// 加载玩家数据请求
+  ID_DBLoadPlayerDataReply		= 0x010C0002;		// 加载玩家数据返回
+  ID_DBSaveSceneRequest 		  = 0x010C0003;		// 存储场景信息请求
+  ID_DBSaveSceneReply			    = 0x010C0004;		// 存储场景信息返回
+  ID_DBLoadSceneRequest 		  = 0x010C0005;		// 加载场景信息请求
+  ID_DBLoadSceneReply 			  = 0x010C0006;		// 加载场景信息返回
+  ID_DBSaveSceneEntityRequest = 0x010C0007;	  // 存储场景实体信息请求
+  ID_DBSaveSceneEntityReply		= 0x010C0008;		// 存储场景实体信息返回
+  ID_DBLoadSceneEntityRequest = 0x010C0009;	  // 加载场景实体信息请求
+  ID_DBLoadSceneEntityReply 	= 0x010C000A;		// 加载场景实体信息返回
+  ID_DBSavePlayerDataRequest 	= 0x010C000B;		// 存储玩家数据请求
+  ID_DBSavePlayerDataReply		= 0x010C000C;		// 存储玩家数据返回
+  // 加载联盟数据请求
+  ID_DBLoadUnionDataRequest  = 0x010C000D;
+  // 加载联盟数据返回
+  ID_DBLoadUnionDataReply    = 0x010C000E;
+  // 存储联盟数据请求
+  ID_DBSaveUnionDataRequest  = 0x010C000F;
+  // 存储联盟数据返回
+  ID_DBSaveUnionDataReply    = 0x010C0010;
+  // 加载物品数据
+  ID_DBLoadItemDataRequest   = 0x010C0011;
+  // 加载物品数据返回
+  ID_DBLoadItemDataReply     = 0x010C0012;
+  // 存储物品数据
+  ID_DBSaveItemDataRequest   = 0x010C0013;
+  // 存储物品数据返回
+  ID_DBSaveItemDataReply     = 0x010C0014;
+  // 存储联盟场景
+  ID_DBSaveUnionSceneRequest = 0x010C0015;
+  // 存储联盟场景返回
+  ID_DBSaveUnionSceneReply   = 0x010C0016;
+  // 加载联盟场景
+  ID_DBLoadUnionSceneRequest = 0x010C0017;
+  // 加载联盟场景返回
+  ID_DBLoadUnionSceneReply   = 0x010C0018;
+  // 加载玩家数据 新
+  ID_DBLoadPlayerDataNewRequest = 0x010C0019;
+  // 加载玩家数据返回 新
+  ID_DBLoadPlayerDataNewReply   = 0x010C001A;
+  // 存储玩家数据 新
+  ID_DBSavePlayerDataNewRequest = 0x010C001B;
+  // 存储玩家数据返回 新
+  ID_DBSavePlayerDataNewReply   = 0x010C001C;
+
+  ID_DBLoadSceneEntityByVersionRequest  = 0x010C001D;   // 根据版本号加载Entities请求
+  ID_DBLoadSceneEntityByVersionReply    = 0x010C001E;   // 根据版本号加载Entities返回
+  ID_DBSaveSceneSnapshotRequest         = 0x010C001F;   // 存储场景快照请求
+  ID_DBSaveSceneSnapshotReply           = 0x010C0020;   // 存储场景快照返回
+  ID_DBLoadSceneSnapshotRequest         = 0x010C0021;   // 加载指定版本的场景快照请求
+  ID_DBLoadSceneSnapshotReply           = 0x010C0022;   // 加载指定版本的场景快照返回
+
+  // 存储场景服据点信息
+  ID_DBSaveSceneJudianRequest        = 0x010C1000;  // 存储场景服据点信息
+  ID_DBSaveSceneJudianReply          = 0x010C1001;  // 存储场景服据点信息返回
+  // 加载场景服据点信息
+  ID_DBLoadSceneJudianRequest        = 0x010C1002;  // 加载场景服据点信息
+  ID_DBLoadSceneJudianReply          = 0x010C1003;  // 加载场景服据点信息返回
+
+
+  // Build(0x010D0001 ~ 0x010DFFFF)
+  ID_BarracksCreateRequest      = 0x010D0001; // 兵营创建
+  ID_BarracksCreateReply        = 0x010D0003; // 兵营创建
+  ID_BarracksUpgradeRequest     = 0x010D0002; // 兵营升级
+
+
+  ID_OfficerListRequest = 0x010E0001;
+  ID_OfficerListReply = 0x010E0002;
+  ID_UseExprBookRequest = 0x010E0003;
+  ID_UseExprBookReply = 0x010E0004;
+  ID_ExchangeItemRequest = 0x010E0005;
+  ID_ExchangeItemReply = 0x010E0006;
+  ID_UpgradeSkillRequest = 0x010E0007;
+  ID_UpgradeSkillReply = 0x010E0008;
+  ID_SkillUnlockNotify = 0x010E0009;
+  ID_OfficerUnlockNotify = 0x010E000A;
+  ID_OfficerInfoNotify = 0x010E000B;
+  ID_OfficerLevelUpNotify = 0x010E00C;
+  ID_OfficerQuestRequest = 0x010E00D;
+  ID_OfficerQuestReplay = 0x010E00E;
+  ID_OfficerQuestFinishNotify = 0x010E00F;
+
+  // union(0x010F0001 ~ 0x010FFFFF)
+  ID_UnionCreateRequest         = 0x010F0001; // 创建联盟
+  ID_UnionCreateReply           = 0x010F0002; // 创建联盟回复
+  ID_UnionJoinRequest           = 0x010F0003; // 加入联盟
+  ID_UnionJoinReply             = 0x010F0004; // 加入联盟回复
+  ID_UnionQuitRequest           = 0x010F0005; // 退出联盟
+  ID_UnionQuitReply             = 0x010F0006; // 退出联盟回复
+  ID_UnionKickRequest           = 0x010F0007; // 踢出联盟
+  ID_UnionKickReply             = 0x010F0008; // 踢出联盟回复
+  ID_UnionDismissRequest        = 0x010F0009; // 解散联盟
+  ID_UnionDismissReply          = 0x010F000A; // 解散联盟回复
+  // 修改联盟基础信息
+  ID_UnionModifyBaseInfoRequest = 0x010F000B; // 修改联盟基础信息
+  ID_UnionModifyBaseInfoReply   = 0x010F000C; // 修改联盟基础信息回复
+  //  ID_UnionChangeNameRequest     = 0x010F000B; // 修改联盟名称
+  //  ID_UnionChangeNameReply       = 0x010F000C; // 修改联盟名称回复
+  //  ID_UnionChangeNoticeRequest   = 0x010F000D; // 修改联盟公告
+  //  ID_UnionChangeNoticeReply     = 0x010F000E; // 修改联盟公告回复
+  //  ID_UnionChangeFlagRequest     = 0x010F000F; // 修改联盟旗帜
+  //  ID_UnionChangeFlagReply       = 0x010F0010; // 修改联盟旗帜回复
+  //  ID_UnionChangeLevelRequest    = 0x010F0011; // 修改联盟等级
+  //  ID_UnionChangeLevelReply      = 0x010F0012; // 修改联盟等级回复
+  //  ID_UnionChangeMemberLevelRequest = 0x010F0013; // 修改联盟成员等级
+  //  ID_UnionChangeMemberLevelReply   = 0x010F0014; // 修改联盟成员等级回复
+  //  ID_UnionChangeMemberPositionRequest = 0x010F0015; // 修改联盟成员职位
+  //  ID_UnionChangeMemberPositionReply   = 0x010F0016; // 修改联盟成员职位回复
+  //  ID_UnionChangeMemberTitleRequest = 0x010F0017; // 修改联盟成员称号
+  //  ID_UnionChangeMemberTitleReply   = 0x010F0018; // 修改联盟成员称号回复
+  //  ID_UnionChangeMemberStatusRequest = 0x010F0019; // 修改联盟成员状态
+  //  ID_UnionChangeMemberStatusReply   = 0x010F001A; // 修改联盟成员状态回复
+  // 搜索联盟
+  ID_UnionSearchRequest         = 0x010F001B; // 搜索联盟
+  ID_UnionSearchReply           = 0x010F001C; // 搜索联盟回复
+  // 获取联盟基础信息
+  ID_UnionGetBaseInfoRequest    = 0x010F001D; // 获取联盟基础信息
+  ID_UnionGetBaseInfoReply      = 0x010F001E; // 获取联盟基础信息回复
+  // 获取联盟成员信息
+  ID_UnionGetMemberInfoRequest  = 0x010F001F; // 获取联盟成员信息
+  ID_UnionGetMemberInfoReply    = 0x010F0020; // 获取联盟成员信息回复
+  // 获取自己所在的联盟信息
+  ID_UnionGetSelfUnionInfoRequest = 0x010F0021; // 获取自己所在的联盟信息
+  ID_UnionGetSelfUnionInfoReply   = 0x010F0022; // 获取自己所在的联盟信息回复
+  // 获取联盟申请列表
+  ID_UnionGetApplyListRequest   = 0x010F0023; // 获取联盟申请列表
+  ID_UnionGetApplyListReply     = 0x010F0024; // 获取联盟申请列表回复
+  // 获取联盟日志
+  ID_UnionGetLogListRequest     = 0x010F0025; // 获取联盟日志
+  ID_UnionGetLogListReply       = 0x010F0026; // 获取联盟日志回复
+  // 修改权限
+  ID_UnionModifyPermissionRequest = 0x010F0027; // 修改权限
+  ID_UnionModifyPermissionReply   = 0x010F0028; // 修改权限回复
+  // 获取所有权限信息
+  ID_UnionGetPermissionInfoRequest = 0x010F0029; // 获取所有权限信息
+  ID_UnionGetPermissionInfoReply   = 0x010F002A; // 获取所有权限信息回复
+
+  // 调整成员等级
+  ID_UnionAdjustMemberLevelRequest = 0x010F002B; // 调整成员等级
+  ID_UnionAdjustMemberLevelReply   = 0x010F002C; // 调整成员等级回复
+
+  // 获取玩家基础信息
+  ID_UnionGetPlayerBaseInfoRequest = 0x010F002D; // 获取玩家基础信息
+  ID_UnionGetPlayerBaseInfoReply   = 0x010F002E; // 获取玩家基础信息回复
+
+  // 获取玩家自身权限
+  ID_UnionGetSelfPermissionRequest = 0x010F002F; // 获取玩家自身权限
+  ID_UnionGetSelfPermissionReply   = 0x010F0030; // 获取玩家自身权限回复
+
+  // 任命官员
+//  ID_UnionAppointOfficialRequest = 0x010F002B; // 任命官员
+//  ID_UnionAppointOfficialReply   = 0x010F002C; // 任命官员回复
+  // 参加竞选
+  ID_UnionJoinElectionRequest   = 0x010F0031; // 参加竞选、
+  ID_UnionJoinElectionReply     = 0x010F0032; // 参加竞选回复
+
+  // 获取竞选信息
+  ID_UnionGetElectionInfoRequest = 0x010F0033; // 获取竞选信息
+  ID_UnionGetElectionInfoReply   = 0x010F0034; // 获取竞选信息回复
+
+  // 修改竞选宣言
+  ID_UnionModifyElectionDeclarationRequest = 0x010F0035; // 修改竞选宣言
+  ID_UnionModifyElectionDeclarationReply   = 0x010F0036; // 修改竞选宣言回复
+
+  // 投票
+  ID_UnionVoteRequest          = 0x010F0037; // 投票
+  ID_UnionVoteReply            = 0x010F0038; // 投票回复
+
+  // 获取投票信息
+  ID_UnionGetVoteInfoRequest   = 0x010F0039; // 获取投票信息
+  ID_UnionGetVoteInfoReply     = 0x010F003A; // 获取投票信息回复
+
+  // 领取竞选奖励
+  ID_UnionGetElectionRewardRequest = 0x010F003B; // 领取竞选奖励
+  ID_UnionGetElectionRewardReply   = 0x010F003C; // 领取竞选奖励回复
+
+  // 获取联盟城池列表
+  ID_UnionGetCityGateListRequest   = 0x010F003D; // 获取联盟城池列表
+  ID_UnionGetCityGateListReply     = 0x010F003E; // 获取联盟城池列表回复
+
+  // 占领城池
+//  ID_UnionOccupyCityGateRequest    = 0x010F003F; // 占领城池
+//  ID_UnionOccupyCityGateReply      = 0x010F0040; // 占领城池回复
+
+  // 放弃城池
+  ID_UnionGiveUpCityGateRequest    = 0x010F0041; // 放弃城池
+  ID_UnionGiveUpCityGateReply      = 0x010F0042; // 放弃城池回复
+
+  // 申请入住城池
+  ID_UnionCityGateApplyZhudiRequest   = 0x010F0043; // 入住城池
+  ID_UnionCityGateApplyZhudiReply     = 0x010F0044; // 入住城池回复
+
+  // 处理入住城池申请
+  ID_UnionCityGateHandleApplyZhudiRequest = 0x010F0045; // 处理入住城池申请
+  ID_UnionCityGateHandleApplyZhudiReply   = 0x010F0046; // 处理入住城池申请回复
+
+  // 获取申请入住城池列表
+  ID_UnionCityGateGetApplyZhudiListRequest = 0x010F0047; // 获取申请入住城池列表
+  ID_UnionCityGateGetApplyZhudiListReply   = 0x010F0048; // 获取申请入住城池列表回复
+
+  // 获取已经入住城池列表
+  ID_UnionCityGateGetZhudiListRequest = 0x010F0049; // 获取已经入住城池列表
+  ID_UnionCityGateGetZhudiListReply   = 0x010F004A; // 获取已经入住城池列表回复
+
+  // 修改驻地是否需要审核
+  ID_UnionCityGateModifyNeedCheckRequest = 0x010F004B; // 修改驻地是否需要审核
+  ID_UnionCityGateModifyNeedCheckReply   = 0x010F004C; // 修改驻地是否需要审核回复
+
+  // 获取玩家自己的城池信息，可以没有联盟
+  ID_UnionCityGateGetPlayerSelfInfoRequest = 0x010F004D; // 获取玩家自己的城池信息
+  ID_UnionCityGateGetPlayerSelfInfoReply   = 0x010F004E; // 获取玩家自己的城池信息回复
+
+  // 获取自己的投票信息
+  ID_UnionGetSelfVoteInfoRequest = 0x010F004F; // 获取自己的投票信息
+  ID_UnionGetSelfVoteInfoReply   = 0x010F0050; // 获取自己的投票信息回复
+
+  // 获取自己能否投票
+  ID_UnionGetSelfCanVoteRequest = 0x010F0051; // 获取自己能否投票
+  ID_UnionGetSelfCanVoteReply   = 0x010F0052; // 获取自己能否投票回复
+
+  // 获取自己能否参选
+  ID_UnionGetSelfCanElectionRequest = 0x010F0053; // 获取自己能否参选
+  ID_UnionGetSelfCanElectionReply   = 0x010F0054; // 获取自己能否参选回复
+
+
+
+
+  // 放弃驻地
+//  ID_UnionCityGateGiveUpZhudiRequest = 0x010F004D; // 放弃驻地
+//  ID_UnionCityGateGiveUpZhudiReply   = 0x010F004E; // 放弃驻地回复
+//
+//  // 驱逐驻地
+//  ID_UnionCityGateExpelZhudiRequest = 0x010F004F; // 驱逐驻地
+//  ID_UnionCityGateExpelZhudiReply   = 0x010F0050; // 驱逐驻地回复
+
+//  // 取消放弃城池
+//  ID_UnionCancelGiveUpCityGateRequest = 0x010F0051; // 取消放弃城池
+//  ID_UnionCancelGiveUpCityGateReply   = 0x010F0052; // 取消放弃城池回复
+
+
+  // 玩家首次登录
+  ID_UnionPlayerFirstLoginRequest = 0x010F1000; // 玩家首次登录
+  ID_UnionPlayerFirstLoginReply   = 0x010F1001; // 玩家首次登录回复
+
+
+
+
+
+
+  ID_AttackStrongholdNotify   = 0x010F0055;//战斗服通知联盟服 攻占据点通知
+  ID_OccupyStrongholdNotify   = 0x010F0056;//战斗服通知联盟服 占领据点通知
+  ID_DefeatRebelsNotify       = 0x010F0057;//战斗服通知联盟服 击败叛军通知
+  ID_OccupyResourceCampNotify = 0x010F0058;//战斗服通知联盟服 占领资源营地通知
+  ID_LiberateMassifNotify     = 0x010F0059;//战斗服通知联盟服 占领地块通知
+
+  ID_UnionInitTaskProgressRequest = 0x010F005A;//客户端请求联盟服 当前联盟任务进度
+  ID_UnionInitTaskProgressReply   = 0x010F005B;
+  ID_LiberateMassifInfoRequest    = 0x010F005C;//客户端请求联盟服 联盟占领地块数据请求
+  ID_LiberateMassifInfoReply      = 0x010F005D;
+  ID_TaskNotesRequest             = 0x010F005E;//客户端请求联盟服 联盟任务记录
+  ID_TaskNotesReply               = 0x010F005F;
+
+  ID_UnionInitTaskShopListRequest = 0x010F0060;//客户端请求游戏服 获取商店列表请求
+  ID_UnionInitTaskShopListReply   = 0x010F0061;
+  ID_UnionInitTaskShoppingRequest = 0x010F0062;//客户端请求游戏服 购买商品
+  ID_UnionInitTaskShoppingReply   = 0x010F0063;
+
+  //ID_UnionInitTaskStartNotify       = 0x010F0064;//战斗服通知联盟服 联盟任务开始
+  //ID_UnionInitTaskFinishNotify      = 0x010F0065;//战斗服通知联盟服 联盟任务完成
+  ID_AttackStrongholdKillNumNotify    = 0x010F0066;//战斗服通知联盟服 个人击杀的据点守军数量
+  ID_OccupyStrongholdDurationNotify   = 0x010F0067;//战斗服通知联盟服 个人部队占领据点时间*战斗力
+  ID_DefeatRebelsKillNumNotify        = 0x010F0068;//战斗服通知联盟服 个人击败的叛军数量
+  ID_OccupyResourceCampKillNumNotify  = 0x010F0069;//战斗服通知联盟服 个人讨伐的资源营地数量
+
+  ID_UnionInitTaskPersonalScoreRequest  = 0x010F006A;//客户端请求游戏服 获取玩家个人积分
+  ID_UnionInitTaskPersonalScoreReply    = 0x010F006B;
+
+  //ID_UnionInitTaskCostPersonalScoreRequest  = 0x010F006C;//联盟服请求游戏服 消耗个人积分
+  //ID_UnionInitTaskCostPersonalScoreReply    = 0x010F006D;
+  ID_UnionInitTaskPlayerLeaveUnionNotify      = 0x010F006E;//联盟服通知游戏服 玩家退出联盟扣除30%的积分
+
+  ID_UnionInitTaskClaimPersonalScoreRequest = 0x010F006F;//客户端通知联盟服 领取个人积分奖励请求
+  ID_UnionInitTaskClaimPersonalScoreReply   = 0x010F0070;
+
+  ID_UnionInitTaskClaimPersonalScoreNotify  = 0x010F0071;//联盟服通知游戏服 领取个人积分通知
+  ID_DBSaveUnionInitTasksNotify             = 0x010F0072;//联盟服通知DB 保存联盟新手任务数据通知
+  ID_DBLoadUnionInitTasksRequest            = 0x010F0073;//联盟服通知DB 加载联盟新手任务数据请求
+
+  ID_DBLoadUnionInitTasksReply = 0x010F0074;//DB通知联盟服 加载联盟新手任务数据响应
+
+  ID_UnionInitTaskGetStarRewardRequest  = 0x010F0075;//客户端请求游戏服 根据星级领取奖励
+  ID_UnionInitTaskGetStarRewardReply    = 0x010F0076;
+
+  ID_UnionInitTaskGetStarRequest  = 0x010F0077;//游戏服请求联盟服 获取星星数量并标记领取奖励
+  ID_UnionInitTaskGetStarReply    = 0x010F0078;
+  ID_SyncUnionInitScoreNotify     = 0x010F0079;//java游戏服通知go游戏服 同步联盟新手任务积分
+  ID_UnionInitTaskEndRequest      = 0x010F008A;//活动结束，发放联盟积分奖励并兑换成奖品以邮件的形式发放
+  ID_UnionInitTaskEndReply        = 0x010F008B;
+
+  // 获取据点信息
+  ID_UnionGetJudianInfoRequest = 0x010F008C;
+  ID_UnionGetJudianInfoReply   = 0x010F008D;
+
+
+  // 获取据点块信息
+  ID_UnionGetJudianBlockInfoRequest = 0x010F008E;
+  ID_UnionGetJudianBlockInfoReply   = 0x010F008F;
+
+  // 获取联盟所有据点块信息
+  ID_UnionGetAllJudianBlockInfoRequest = 0x010F0090;
+  ID_UnionGetAllJudianBlockInfoReply   = 0x010F0091;
+
+  // 获取联盟所有据点信息
+  ID_UnionGetAllJudianInfoRequest = 0x010F0092;
+  ID_UnionGetAllJudianInfoReply   = 0x010F0093;
+
+
+  // 联盟消息最大值
+  ID_UnionMax                      = 0x01FF0000;
+
+
+  // gateway  game
+  ID_GatewayToGameLoginRequest  = 0x02000001; // gateway to game login request
+  ID_GatewayToGameLoginReply   = 0x02000002; // gateway to game login reply
+  ID_GatewayToGameLogoutRequest = 0x02000003; // gateway to game logout request
+  ID_GatewayToGameLogoutReply  = 0x02000004; // gateway to game logout reply
+
+
+  // game  scene
+  ID_SceneToGameLoadAllInfoRequest = 0x02010001; // scene to game load all info request
+  ID_SceneToGameLoadAllInfoReply  = 0x02010002; // scene to game load all info reply
+
+  // 通知创建初始附属城邦，城邦  , 由game发给scene
+//  ID_GameToSceneCreateInitCityGateRequest = 0x02010003; // 通知创建初始附属城邦，城邦
+//  ID_GameToSceneCreateInitCityGateReply   = 0x02010004; // 通知创建初始附属城邦，城邦回复
+
+  // 通知占领某个城池 , 由scene发给game
+  ID_SceneToGameOccupyCityGateRequest = 0x02010005; // 通知占领某个城池
+  ID_SceneToGameOccupyCityGateReply   = 0x02010006; // 通知占领某个城池回复
+
+  // 通知占领某个据点 , 由scene发给game
+  ID_SceneToGameOccupyJuDianRequest = 0x02010007; // 通知占领某个据点
+  ID_SceneToGameOccupyJuDianReply   = 0x02010008; // 通知占领某个据点回复
+
+  // 通知清除某个城池,由scene发给game
+  ID_SceneToGameClearCityGateRequest = 0x02010009; // 通知清除某个城池
+  ID_SceneToGameClearCityGateReply   = 0x0201000A; // 通知清除某个城池回复
+
+  // 通知清除某个据点,由scene发给game
+  ID_SceneToGameClearJuDianRequest = 0x0201000B; // 通知清除某个据点
+  ID_SceneToGameClearJuDianReply   = 0x0201000C; // 通知清除某个据点回复
+
+  // 通知清除某个城池,由game发给scene
+  ID_GameToSceneClearCityGateRequest = 0x0201000D; // 通知清除某个城池
+  ID_GameToSceneClearCityGateReply   = 0x0201000E; // 通知清除某个城池回复
+
+  // 通知清除某个据点,由game发给scene
+  ID_GameToSceneClearJuDianRequest = 0x0201000F; // 通知清除某个据点
+  ID_GameToSceneClearJuDianReply   = 0x02010010; // 通知清除某个据点回复
+
+  // 通知指挥所开始修建,由game发给scene
+  ID_GameToSceneStartBuildCommandCenterRequest = 0x02010011; // 通知指挥所开始修建,由game发给scene
+  ID_GameToSceneStartBuildCommandCenterReply   = 0x02010012; // 通知指挥所开始修建,由game发给scene回复
+
+  // 通知指挥所修建完成,由scene发给game
+  ID_SceneToGameFinishBuildCommandCenterRequest = 0x02010013; // 通知指挥所修建完成,由scene发给game
+  ID_SceneToGameFinishBuildCommandCenterReply   = 0x02010014; // 通知指挥所修建完成,由scene发给game回复
+
+  // 通知指挥所完成修建,由game发给scene
+  ID_GameToSceneFinishBuildCommandCenterRequest = 0x02010015; // 通知指挥所完成修建,由game发给scene
+  ID_GameToSceneFinishBuildCommandCenterReply   = 0x02010016; // 通知指挥所完成修建,由game发给scene回复
+
+  // 通知新的玩家入住驻地,由game发给scene
+  ID_GameToSceneNewPlayerEnterZhudiRequest = 0x02010017; // 通知新的玩家入住驻地,由game发给scene
+  ID_GameToSceneNewPlayerEnterZhudiReply   = 0x02010018; // 通知新的玩家入住驻地,由game发给scene回复
+
+  // 通知占领据点完成,由scene发给game
+  ID_SceneToGameOccupyJuDianFinishRequest = 0x02010019; // 通知占领据点完成,由scene发给game
+  ID_SceneToGameOccupyJuDianFinishReply   = 0x0201001A; // 通知占领据点完成,由scene发给game回复
+
+  // 获取某个部队的信息
+  ID_SceneToGameGetArmyTroopInfoRequest = 0x0201001B; // 获取某个部队的信息
+  ID_SceneToGameGetArmyTroopInfoReply   = 0x0201001C; // 获取某个部队的信息回复
+
+
+  /********************* player to game build ***********************/
+  // start
+  ID_PlayerToGameStart = 0x02020000;
+  // 玩家请求建造
+  ID_PlayerToGameBuildRequest = 0x02020001; // 玩家请求建造
+  ID_PlayerToGameBuildReply   = 0x02020002; // 玩家请求建造回复
+
+  // 玩家请求建筑升级
+  ID_PlayerToGameBuildUpgradeRequest = 0x02020003; // 玩家请求建筑升级
+  ID_PlayerToGameBuildUpgradeReply   = 0x02020004; // 玩家请求建筑升级回复
+
+  // 玩家请求建筑产出信息
+  ID_PlayerToGameBuildOutputRequest = 0x02020005; // 玩家请求建筑产出信息
+  ID_PlayerToGameBuildOutputReply   = 0x02020006; // 玩家请求建筑产出信息回复
+
+  // 通知玩家建筑产出信息
+  ID_GameToPlayerBuildOutputNotify = 0x02020007; // 通知玩家建筑产出信息
+
+  // 通知建筑状态改变
+  ID_GameToPlayerBuildStateNotify = 0x02020008; // 通知建筑状态改变
+
+  // 玩家请求杀死npc
+  ID_PlayerToGameKillNpcRequest = 0x0202000A; // 玩家请求杀死npc
+  ID_PlayerToGameKillNpcReply   = 0x0202000B; // 玩家请求杀死npc回复
+
+
+  // max
+  ID_PlayerToGameMax = 0x0202FFFF;
+
+  /********************* property ***********************/
+  // start
+  ID_PropertyStart = 0x03000000;
+  // 通知所有属性
+  ID_PropertyNotifyAll = 0x03000001; // 通知所有属性
+  // 通知属性变化
+  ID_PropertyNotifyChange = 0x03000002; // 通知属性变化
+  // 修改属性
+  ID_PropertyModifyRequest = 0x03000003; // 修改属性
+  ID_PropertyModifyReply   = 0x03000004; // 修改属性回复
+
+  // max
+  ID_PropertyMax = 0x0300FFFF;
+
+}
+
+

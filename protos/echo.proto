@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message Echo {
+    int32 id = 1;
+    string msg = 2;
+    map<int32, string> data = 3;
+}

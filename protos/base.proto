@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package kop;
+option go_package = "./kop";
+
+message Item {
+  int32 ConfId = 1;
+  int32 Count = 2;
+  int32 Total = 3;
+  int64 Id = 4;
+}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using FairyGUI;
 using UnityEngine;
-// using YooAsset;
+using YooAsset;
 
 public abstract class  AsyncWindow : Window
 {
@@ -62,7 +62,7 @@ public abstract class  AsyncWindow : Window
 
     private async UniTask CreateWindowAsync()
     {
-        // await AddWindowPackageAsync(PkgName);
+        await AddWindowPackageAsync(PkgName);
 
         View = UIPackage.CreateObject(PkgName, CompName).asCom;
         this.name = $"{PkgName}_Window";
@@ -164,7 +164,7 @@ public abstract class  AsyncWindow : Window
         RemoveSelf();
         View.Dispose();
         Dispose();
-        // ReleaseHandles();
+        ReleaseHandles();
     }
 
     public void RemoveSelf()
@@ -199,8 +199,7 @@ public abstract class  AsyncWindow : Window
         this.visible = enter;
     }
 
-/*
- *    #region 资源相关
+   #region 资源相关
    
        // 资源句柄列表
        private List<AssetOperationHandle> _handles = new List<AssetOperationHandle>(100);
@@ -255,6 +254,5 @@ public abstract class  AsyncWindow : Window
        }
    
        #endregion
- */
  
 }

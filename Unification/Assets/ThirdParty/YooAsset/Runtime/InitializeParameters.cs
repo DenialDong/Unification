@@ -83,8 +83,12 @@ namespace YooAsset
 	/// <summary>
 	/// 联机运行模式的初始化参数
 	/// </summary>
-	public class HostPlayModeParameters : InitializeParameters
+	public  class HostPlayModeParameters : InitializeParameters
 	{
+		/// <summary>
+		/// 内置资源查询服务接口
+		/// </summary>
+		public IQueryServices QueryServices = null;
 		/// <summary>
 		/// 内置资源查询服务接口
 		/// </summary>
@@ -100,12 +104,16 @@ namespace YooAsset
 		/// </summary>
 		public IRemoteServices RemoteServices = null;
 	}
-
+	
 	/// <summary>
 	/// WebGL运行模式的初始化参数
 	/// </summary>
 	public class WebPlayModeParameters : InitializeParameters
 	{
+		/// <summary>
+		/// 内置资源查询服务接口
+		/// </summary>
+		public IQueryServices QueryServices = null;
 		/// <summary>
 		/// 内置资源查询服务接口
 		/// </summary>

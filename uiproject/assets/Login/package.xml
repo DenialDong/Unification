@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="0pjk3w3j">
+  <resources>
+    <component id="l9x00" name="Root.xml" path="/" exported="true"/>
+    <image id="l9x09" name="change(1).png" path="/img/"/>
+    <component id="l9x01" name="btn_login.xml" path="/components/"/>
+    <image id="l9x0a" name="loading(1).png" path="/img/" duplicatePadding="true"/>
+  </resources>
+  <publish name=""/>
+</packageDescription>

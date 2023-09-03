@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="au7h48s9">
+  <resources>
+    <component id="ibgv1c" name="TabBottomIR.xml" path="/components/"/>
+    <component id="ibgv1d" name="Root.xml" path="/" exported="true"/>
+    <image id="ibgv1e" name="ico_shandian(1).png" path="/img/"/>
+    <image id="ibgv1f" name="ico_shezhi(1).png" path="/img/"/>
+    <image id="ibgv1g" name="ico_shijie(1).png" path="/img/"/>
+    <image id="ibgv1h" name="ico_tianfu(1).png" path="/img/"/>
+    <image id="ibgv1i" name="ico_zhuangbei(1).png" path="/img/"/>
+    <image id="ibgv1j" name="c1_png(1).png" path="/img/" scale="9grid" scale9grid="23,5,46,10"/>
+  </resources>
+  <publish name=""/>
+</packageDescription>

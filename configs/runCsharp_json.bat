@@ -13,3 +13,8 @@ dotnet %LUBAN_DLL% ^
     -x outputDataDir=%OUTPUTJSON%
 
 pause
+Rem ^
+	Rem -x l10n.textProviderFile=TeseEn.xlsx ^
+	Rem -x l10n.textFieldName=text_en ^
+	Rem -x l10n.outputNotTranslatedTextFile=NotLocalized_CN.txt
+pause

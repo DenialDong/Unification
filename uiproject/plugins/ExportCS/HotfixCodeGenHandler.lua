@@ -76,10 +76,9 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
     -- writer:writeln("using FUIFW;")
     writer:writeln()
 
-    writer:writeln([[public partial class %s
-    {   
-            ]], codePkgName .. "Comp")
-
+    writer:writeln("public partial class %s",codePkgName .. "Window")
+    writer:writeln("{")
+    writer:writeln()
     local memberCnt = members.Count
     fprint(codePkgName .. "  找到了" .. memberCnt .. " 个成员变量")
 
@@ -109,7 +108,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
             if codePkgName ~= memberInfo.res.owner.name then
                 pkgNeedGen[memberInfo.res.owner.name] = true
                 typeName = memberInfo.res.owner.name ..
-                    "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
+                    "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
                 crossPackageFlagsArray[j] = true
             end
         end
@@ -121,18 +120,18 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
     writer:writeln()
     writer:writeln(
         [[
-    public void Init(GObject go)
+    public override void InitProperty(GObject go)
+    {
+        if (go == null)
         {
-            if (go == null)
-            {
-                return;
-            }
+            return;
+        }
+        
+        var m_Comp = go.asCom;
             
-            var m_Comp = go.asCom;
-                
-            if (m_Comp != null)
-            {   
-                ]]
+        if (m_Comp != null)
+        {   
+            ]]
     )
 
     local function asPostfix(className)
@@ -201,7 +200,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
                         '\t\t\t' .. textGetChild,
                         memberVarName,
                         memberInfo.res.owner.name ..
-                        "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
+                        "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
                     )
                     writer:writeln(
                         '\t\t\t' .. textResetChild,
@@ -235,7 +234,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
                         '\t\t\t' .. textGetChildAt,
                         memberVarName,
                         memberInfo.res.owner.name ..
-                        "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
+                        "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfo.res.name
                     )
                     writer:writeln(
                         '\t\t\t\t' .. textResetChild,
@@ -279,14 +278,9 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
             local classNameSub = classNamePrefix .. classInfoSub.className
             -- fprint("krma." .. classNameSub)
 
-            writer:writeln(
-                [[
-                public class %s
-                {   
-                ]],
-                classNameSub
-            -- .. " : " .. classInfoSub.superClassName
-            )
+            writer:writeln("\tpublic class %s",classNameSub)
+            writer:writeln("\t{")
+            writer:writeln()
 
             local memberCntSub = membersSub.Count
             -- 是否为自定义类型组件标记数组
@@ -316,7 +310,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
                     if codePkgName ~= memberInfoSub.res.owner.name then
                         pkgNeedGen[memberInfoSub.res.owner.name] = true
                         typeNameSub = memberInfoSub.res.owner.name ..
-                            "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
+                            "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
                         crossPackageFlagsArraySub[n] = true
                     end
                 end
@@ -364,24 +358,24 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
             end
             writer:writeln()
             writer:writeln(
-                [[
-                public %s()  { }
-        
-                //Todo 删掉
-                public %s(GObject go) { ResetItem(go); }
+        [[
+        public %s()  { }
 
-                public void ResetItem(GObject go)
-                {
-                    if (go == null)
-                    {
-                        return;
-                    }
-                    
-                    var m_Comp = go.asCom;
-                        
-                    if (m_Comp != null)
-                    {   
-                ]],
+        //Todo 删掉
+        public %s(GObject go) { ResetItem(go); }
+
+        public void ResetItem(GObject go)
+        {
+            if (go == null)
+            {
+                return;
+            }
+            
+            var m_Comp = go.asCom;
+                
+            if (m_Comp != null)
+            {   
+        ]],
                 classNameSub,classNameSub
             )
 
@@ -409,7 +403,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
                                 '\t\t\t\t' .. textGetChild,
                                 memberVarNameSub,
                                 memberInfoSub.res.owner.name ..
-                                "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
+                                "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
                             )
                             writer:writeln(
                                 '\t\t\t\t' .. textResetChild,
@@ -443,7 +437,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
                                 '\t\t\t\t' .. textGetChildAt,
                                 memberVarNameSub,
                                 memberInfoSub.res.owner.name ..
-                                "Comp." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
+                                "Window." .. settings.classNamePrefix .. classNamePrefix .. memberInfoSub.res.name
                             )
                             writer:writeln(
                                 '\t\t\t\t' .. textResetChild,
@@ -530,7 +524,7 @@ function HotfixCodeGenHandler.Do(handler, codeGenConfig)
 
     writer:writeln("}")
 
-    path = exportCodePath .. "/" .. codePkgName .. "AutoComp.cs"
+    path = exportCodePath .. "/" .. codePkgName .. "AutoWindow.cs"
     writer:save(path)
     fprint("生成代码完毕：" .. path)
     for index, value in pairs(pkgNeedGen) do

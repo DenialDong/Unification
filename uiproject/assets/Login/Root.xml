@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="640,1280">
+  <displayList>
+    <image id="n0_l9x0" name="n0" src="l9x09" fileName="img/change(1).png" xy="-55,-27" size="750,1334">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <image id="n6_l9x0" name="n6" src="l9x0a" fileName="img/loading(1).png" xy="357,358" size="223,72"/>
+    <image id="n7_l9x0" name="n7" src="l9x0a" fileName="img/loading(1).png" xy="357,451" size="223,72"/>
+    <text id="n1_l9x0" name="input1" xy="364,363" size="204,60" fontSize="30" autoSize="none" text="" input="true"/>
+    <text id="n2_l9x0" name="n2" xy="197,369" size="138,48" fontSize="30" autoSize="none" text="用户名：&#xA;"/>
+    <text id="n3_l9x0" name="n3" xy="197,464" size="138,48" fontSize="30" autoSize="none" text="密码："/>
+    <text id="n4_l9x0" name="input2" xy="363,460" size="204,60" fontSize="30" autoSize="none" text="" input="true"/>
+    <component id="n5_l9x0" name="btnlogin" src="l9x01" fileName="components/btn_login.xml" xy="284,565" size="171,66">
+      <Button title="登录" selectedTitle="登录"/>
+    </component>
+  </displayList>
+</component>

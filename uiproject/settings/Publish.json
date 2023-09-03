@@ -8,12 +8,12 @@
   "jpegQuality": 80,
   "compressPNG": false,
   "codeGeneration": {
-    "allowGenCode": false,
-    "codePath": "",
+    "allowGenCode": true,
+    "codePath": "..\\client\\Unity\\Assets\\Scripts\\hotfix\\Main\\Codes\\Logic\\UI\\",
     "classNamePrefix": "UI_",
     "memberNamePrefix": "m_",
     "packageName": null,
-    "ignoreNoname": true,
+    "ignoreNoname": false,
     "getMemberByName": true,
     "codeType": ""
   },

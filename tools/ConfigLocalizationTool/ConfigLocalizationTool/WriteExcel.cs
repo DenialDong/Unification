@@ -8,8 +8,6 @@ namespace ConvertExcel
 {
     public sealed class WriteExcel : Singleton<WriteExcel>
     {
-        private List<string> m_ErrorMsg = new List<string>();
-
         private Dictionary<string, string> TypeCastDic = new Dictionary<string, string>
         {
             { "int", "number" },
@@ -19,88 +17,92 @@ namespace ConvertExcel
             { "array", "array" },
         };
 
+        private List<string> langPathList = new List<string>
+        {
+            "LanguageTable_en.xlsx",
+            "LanguageTable_ja.xlsx",
+            "LanguageTable_ko.xlsx",
+            "LanguageTable_zh-cn.xlsx",
+            "LanguageTable_zh-TW.xlsx",
+        };
+
         public void WriteToFolder(string folderPath)
         {
-            folderPath = $"{folderPath}\\GeneratedYamato";
+            folderPath = $"{folderPath}/LanguageTable";
             DirectoryInfo folder = new DirectoryInfo(folderPath);
             if (!folder.Exists)
             {
-                Directory.CreateDirectory(folderPath);
+                ErrorMsgMgr.Instance.AddErrorMsg($"{folderPath}不存在");
+                return;
             }
 
-            foreach (var excelBook in ExcelDataMgr.Instance.GetExcelBooks().Values)
+            foreach (var langPath in langPathList)
             {
-                WriteToExcel(folderPath, excelBook);
+                var langList = ExcelDataMgr.Instance.GetLangList();
+                WriteToTargetLanguage($"{folderPath}/{langPath}", langList);
             }
         }
 
-        private void WriteToExcel(string path, ExcelBook excelBook)
+        private void WriteToTargetLanguage(string path, HashSet<string> langList)
         {
+            Dictionary<string, string> excelContent = new Dictionary<string, string>();
             ExcelPackage excel = null;
             Stream stream = null;
             try
             {
-                excel = new ExcelPackage($"{path}\\{excelBook.GetExcelName()}Yamato.xlsx");
-                foreach (var sheet in excelBook.GetSheets())
+                excel = new ExcelPackage($"{path}");
+
+                var worksheet =
+                    excel.Workbook.Worksheets[0];
+                int lastRow = worksheet.Dimension.End.Row;
+
+                int startIndex = 1;
+                while (startIndex <= lastRow)
                 {
-                    var worksheet =
-                        excel.Workbook.Worksheets.FirstOrDefault(x => x.Name == sheet.GetSheetName());
-                    //If worksheet "Content" was not found, add it
-                    if (worksheet != null)
+                    var text = worksheet.Cells[startIndex, 1].Text;
+                    if (text != null && !text.Contains("##"))
                     {
-                        excel.Workbook.Worksheets.Delete(sheet.GetSheetName());
+                        break;
                     }
 
-                    worksheet = excel.Workbook.Worksheets.Add(sheet.GetSheetName());
+                    startIndex++;
+                }
 
-                    //ExcelWorksheet worksheet = excel.Workbook.Worksheets.Add(excelBook.GetExcelName());
-                    int col = 1;
-                    foreach (var column in sheet.GetColumns())
+                for (int row = startIndex; row <= lastRow; row++)
+                {
+                    excelContent[worksheet.Cells[row, 2].Text] = worksheet.Cells[row, 3].Text;
+                }
+
+                int i = startIndex;
+                foreach (var content in excelContent)
+                {
+                    if (langList.Contains(content.Key))
                     {
-                        switch (column.GetColumnType())
-                        {
-                            case ColumnType.DataColumn:
-                                AppendDataColumn(worksheet, column as DataColumn, col);
-                                break;
-                            case ColumnType.NormalColumn:
-                                AppendNormalColumn(worksheet, column as NormalColumn, col);
-                                break;
-                            case ColumnType.StructColumn:
-                                var sheetName = $"{excelBook.GetLowerExcelName()}Struct";
-                                var workStructSheet =
-                                    excel.Workbook.Worksheets.FirstOrDefault(x => x.Name == sheetName);
-                                //If worksheet "Content" was not found, add it
-                                if (workStructSheet != null)
-                                {
-                                    excel.Workbook.Worksheets.Delete(sheetName);
-                                }
+                        worksheet.Cells[i, 2].Value = content.Key;
+                        worksheet.Cells[i, 3].Value = content.Value;
+                        ++i;
+                    }
+                }
 
-                                workStructSheet = excel.Workbook.Worksheets.Add(sheetName);
-                                var structColumn = column as StructColumn;
-                                WriteToStructSheet(workStructSheet, structColumn);
-                                AppendDataColumn(worksheet,
-                                    new DataColumn(structColumn.GetFieldName(), structColumn.GetAliasName(),
-                                        structColumn.GetDataType(), structColumn.GetColumnContent(),
-                                        structColumn.GetColmnIndex()), col);
-
-                                break;
-                            default:
-                                break;
-                        }
-
-                        ++col;
+                foreach (var lang in langList)
+                {
+                    if (!excelContent.ContainsKey(lang))
+                    {
+                        worksheet.Cells[i, 2].Value = lang;
+                        worksheet.Cells[i, 3].Value = "";
+                        ++i;
                     }
                 }
 
                 //excel.Save();
-                stream = new FileStream($"{path}\\{excelBook.GetExcelName()}Yamato.xlsx", FileMode.Create,
+                stream = new FileStream($"{path}", FileMode.Create,
                     FileAccess.Write, FileShare.ReadWrite);
                 excel.SaveAs(stream);
             }
             catch (Exception e)
             {
                 ErrorMsgMgr.Instance.AddErrorMsg(
-                    $"{excelBook.GetExcelName()}写入出错, 检查是否Excel是否在另外的进程中打开\n 详细信息:\n{e}\n\n");
+                    $"{path}写入出错, 检查是否Excel是否在另外的进程中打开\n 详细信息:\n{e}\n\n");
             }
             finally
             {

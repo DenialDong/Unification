@@ -7,10 +7,13 @@ namespace ConvertExcel
 {
     public sealed class ReadExcel : Singleton<ReadExcel>
     {
+        private string m_LangBeanName = "Lang";
+
         public void ReadFolder(string folderPath)
         {
             ErrorMsgMgr.Instance.ClearErrorMsg();
             DirectoryInfo folder = new DirectoryInfo(folderPath);
+            ReadBeanExcel(folderPath);
             ReadAllExcelData(folder);
         }
 
@@ -29,7 +32,9 @@ namespace ConvertExcel
 
             foreach (FileInfo file in folder.GetFiles("*.xlsx"))
             {
-                if (file.Name.Contains("~$") || file.Name.Contains("LanguageTable"))
+                if (file.Name.Contains("~$")
+                    || file.Name.Contains("LanguageTable")
+                    || file.Name.Contains("__"))
                 {
                     continue;
                 }
@@ -55,17 +60,17 @@ namespace ConvertExcel
                     return;
                 }
 
+                List<string> langList = new List<string>();
                 foreach (var sheet in excel.Workbook.Worksheets)
                 {
                     if (ValidateSheet(sheet))
                     {
-                        ExcelSheet excelSheet = ReadDataSheet(sheet, file.Name);
-                        if (excelSheet != null)
-                            sheets.Add(excelSheet);
+                        List<string> sheetLangList = GetSheetLangList(sheet, file.Name);
+                        langList.AddRange(sheetLangList);
                     }
                 }
 
-                ExcelDataMgr.Instance.AddExcelBook(file.Name, new ExcelBook(file.Name, sheets));
+                ExcelDataMgr.Instance.AddLang(file.Name, langList);
                 excel.Dispose();
                 fileStream.Dispose();
             }
@@ -75,13 +80,301 @@ namespace ConvertExcel
             }
         }
 
-        /**
-         * TODO sheet name cannot include #
-         * TODO first column cannot include # also;
-         */
+        private List<string> GetSheetLangList(ExcelWorksheet sheet, string fileName)
+        {
+            List<string> langList = new List<string>();
+            var typeIdx = GetTypeColIndex(sheet);
+            int maxColumnNum = sheet.Dimension.End.Column;
+            for (var col = 1; col <= maxColumnNum; col++)
+            {
+                var type = GetValue(sheet, typeIdx, col);
+                switch (validateLang(type))
+                {
+                    case LangBean.None:
+                        break;
+                    case LangBean.LangItSelf:
+                        var langItSelfList = GetColByIndex(col, sheet);
+                        langList.AddRange(langItSelfList);
+                        break;
+                    case LangBean.BeanContainLang:
+                        var beanContainLangList = GetLangInSideBean(sheet, col, type, fileName);
+                        langList.AddRange(beanContainLangList);
+                        break;
+                }
+            }
+
+            return langList;
+        }
+
+
+        private LangBean validateLang(string type)
+        {
+            if (type == m_LangBeanName)
+            {
+                return LangBean.LangItSelf;
+            }
+
+            var beanInfo = ExcelDataMgr.Instance.GetBeanInfoByName(type);
+            if (beanInfo != null)
+            {
+                return LangBean.BeanContainLang;
+            }
+
+            return LangBean.None;
+        }
+
         private bool ValidateSheet(ExcelWorksheet sheet)
         {
+            if (sheet.Name.Contains('#'))
+            {
+                return false;
+            }
+
+            bool hasVar = false;
+            bool hasType = false;
+            for (int i = 1; i <= 4; i++)
+            {
+                var value = GetValue(sheet, i, 1);
+                if (value == "##var")
+                {
+                    hasVar = true;
+                }
+
+                if (value == "##type")
+                {
+                    hasType = true;
+                }
+            }
+
+            if (hasVar && hasType)
+            {
+                return true;
+            }
+
             return false;
+        }
+
+        private void ReadBeanExcel(string folderPath)
+        {
+            FileStream fileStream;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage excel;
+            try
+            {
+                fileStream = new FileStream($"{folderPath}/__beans__.xlsx", FileMode.Open, FileAccess.Read,
+                    FileShare.ReadWrite);
+                excel = new ExcelPackage(fileStream);
+
+                if (excel.Workbook.Worksheets.Count == 0)
+                {
+                    ErrorMsgMgr.Instance.AddErrorMsg($"__beans__.xlsx表里的sheet数量为0");
+                    return;
+                }
+
+                foreach (var sheet in excel.Workbook.Worksheets)
+                {
+                    int fullNameIndex = GetBeanColIndexByName("full_name", sheet);
+                    int sepIndex = GetBeanColIndexByName("sep", sheet);
+                    int fieldsIndex = GetBeanColIndexByName("*fields", sheet);
+                    int startIndex = GetBeanStartIndex(sheet);
+                    if (startIndex == -1 || GetValue(sheet, startIndex, 2) == "")
+                    {
+                        ErrorMsgMgr.Instance.AddErrorMsg($"cannot find start index in __beans__.xlsx");
+                        return;
+                    }
+
+                    int maxRowNum = sheet.Dimension.End.Row;
+                    int row = startIndex;
+                    while (row <= maxRowNum)
+                    {
+                        var lang = GetValue(sheet, row, fieldsIndex + 1);
+                        if (lang == "")
+                            break;
+
+                        if (lang == m_LangBeanName && !GetValue(sheet, row, 1).Contains("##"))
+                        {
+                            int endIndex = row;
+
+                            while (endIndex > 0)
+                            {
+                                var fullName = GetValue(sheet, endIndex, fullNameIndex);
+                                var firstCol = GetValue(sheet, endIndex, 1);
+                                if (!firstCol.Contains("##") && fullName.Length > 0)
+                                {
+                                    break;
+                                }
+
+                                --endIndex;
+                            }
+
+                            Bean bean;
+                            string beanName = GetValue(sheet, endIndex, fullNameIndex);
+                            bean.sep = GetValue(sheet, endIndex, sepIndex);
+                            bean.index = row - endIndex;
+                            ExcelDataMgr.Instance.AddBean(beanName, bean);
+                        }
+
+                        ++row;
+                    }
+
+                    break;
+                }
+
+                excel.Dispose();
+                fileStream.Dispose();
+            }
+            catch (Exception e)
+            {
+                ErrorMsgMgr.Instance.AddErrorMsg($"读取__beans__.xlsx出错 \n详细信息:\n{e}\n\n");
+            }
+        }
+
+        private int GetBeanColIndexByName(string name, ExcelWorksheet sheet)
+        {
+            int maxColumnNum = sheet.Dimension.End.Column;
+            for (var col = 1; col <= maxColumnNum; col++)
+            {
+                if (name == GetValue(sheet, 1, col))
+                {
+                    return col;
+                }
+            }
+
+            return -1;
+        }
+
+        private int GetBeanStartIndex(ExcelWorksheet sheet)
+        {
+            int maxRowNum = sheet.Dimension.End.Row;
+            for (int row = 1; row <= maxRowNum; row++)
+            {
+                if (!GetValue(sheet, row, 1).Contains("##"))
+                {
+                    return row;
+                }
+            }
+
+            return -1;
+        }
+
+        private int GetTypeColIndex(ExcelWorksheet sheet)
+        {
+            int maxRowNum = sheet.Dimension.End.Row;
+            for (int row = 1; row <= maxRowNum; row++)
+            {
+                if (GetValue(sheet, row, 1).Contains("##type"))
+                {
+                    return row;
+                }
+            }
+
+            return -1;
+        }
+
+        private List<string> GetColByIndex(int col, ExcelWorksheet sheet)
+        {
+            List<string> list = new List<string>();
+            int maxRowNum = sheet.Dimension.End.Row;
+            for (int row = 1; row <= maxRowNum; row++)
+            {
+                if (!GetValue(sheet, row, 1).Contains("##"))
+                {
+                    var lang = GetValue(sheet, row, col);
+                    if (lang.Length > 0)
+                    {
+                        list.Add(lang);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        private List<string> GetLangInSideBean(ExcelWorksheet sheet, int col, string type, string fileName)
+        {
+            List<string> list = new List<string>();
+            var beanInfo = ExcelDataMgr.Instance.GetBeanInfoByName(type);
+            var beanType = validateBeanType(sheet, col);
+            switch (beanType)
+            {
+                case BeanType.None:
+                    ErrorMsgMgr.Instance.AddErrorMsg($"{fileName}表的 ##var配置有误 ");
+                    break;
+                case BeanType.Separate:
+                    foreach (var bean in beanInfo)
+                    {
+                        var separateList = GetColByIndex(col + bean.index, sheet);
+                        list.AddRange(separateList);
+                    }
+                    break;
+                case BeanType.OneColumn:
+                    var oneColumnList = GetLangInsideOneColumnBean(col, beanInfo, sheet);
+                    list.AddRange(oneColumnList);
+                    break;
+            }
+
+            return list;
+        }
+
+        private List<string> GetLangInsideOneColumnBean(int col, List<Bean> beanInfo, ExcelWorksheet sheet)
+        {
+            List<string> list = new List<string>();
+            if (beanInfo.Count > 0)
+            {
+                int maxRowNum = sheet.Dimension.End.Row;
+                for (int row = 1; row <= maxRowNum; row++)
+                {
+                    if (!GetValue(sheet, row, 1).Contains("##"))
+                    {
+                        var lang = GetValue(sheet, row, col);
+                        if (lang.Length > 0)
+                        {
+                            var structInfo = lang.Split(beanInfo[0].sep);
+                            foreach (var bean in beanInfo)
+                            {
+                                if (structInfo.Length > bean.index)
+                                {
+                                    list.Add(structInfo[bean.index]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+
+        private BeanType validateBeanType(ExcelWorksheet sheet, int col)
+        {
+            int varTypeNum = 0;
+            int varNum = 0;
+            int maxRowNum = sheet.Dimension.End.Row;
+            for (int row = 1; row <= maxRowNum; row++)
+            {
+                if (GetValue(sheet, row, 1).Length == 0)
+                    break;
+                if (GetValue(sheet, row, 1).Contains("##var"))
+                {
+                    varTypeNum++;
+                    if (GetValue(sheet, row, col).Length > 0)
+                    {
+                        varNum++;
+                    }
+                }
+            }
+
+            if (varTypeNum == 2 && varNum == 2)
+            {
+                return BeanType.Separate;
+            }
+
+            if (varTypeNum >= 1 && varNum == 1)
+            {
+                return BeanType.OneColumn;
+            }
+
+            return BeanType.None;
         }
 
         private ExcelSheet ReadOtherSheet(ExcelWorksheet otherSheet)

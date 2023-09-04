@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Kop\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj": {}
+    "C:\\Users\\wangh\\Desktop\\huidongWorkingArea\\Unification\\Unification\\tools\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj": {}
   },
   "projects": {
-    "D:\\Kop\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj": {
+    "C:\\Users\\wangh\\Desktop\\huidongWorkingArea\\Unification\\Unification\\tools\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Kop\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj",
+        "projectUniqueName": "C:\\Users\\wangh\\Desktop\\huidongWorkingArea\\Unification\\Unification\\tools\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj",
         "projectName": "ConfigLocalizationTool",
-        "projectPath": "D:\\Kop\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj",
+        "projectPath": "C:\\Users\\wangh\\Desktop\\huidongWorkingArea\\Unification\\Unification\\tools\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool.csproj",
         "packagesPath": "C:\\Users\\wangh\\.nuget\\packages\\",
-        "outputPath": "D:\\Kop\\ConfigLocalizationTool\\ConfigLocalizationTool\\ConfigLocalizationTool\\obj\\",
+        "outputPath": "C:\\Users\\wangh\\Desktop\\huidongWorkingArea\\Unification\\Unification\\tools\\ConfigLocalizationTool\\ConfigLocalizationTool\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

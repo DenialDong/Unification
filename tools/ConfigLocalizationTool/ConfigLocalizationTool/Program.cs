@@ -15,8 +15,8 @@ namespace ConvertExcel
     {
         static void Main(string[] args)
         {
-            var path = "C:\\Users\\wangh\\Desktop\\Access.xlsx";
-            var folderPath = @"D:\Kop\GitWorkSpace\configs";
+            // var folderPath = @"D:\Kop\GitWorkSpace\configs";
+            var folderPath = args[0];
 
             ReadExcel.Instance.ReadFolder(folderPath);
             WriteExcel.Instance.WriteToFolder(folderPath);

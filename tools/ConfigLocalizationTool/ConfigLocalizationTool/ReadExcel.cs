@@ -64,6 +64,7 @@ namespace ConvertExcel
                             sheets.Add(excelSheet);
                     }
                 }
+
                 ExcelDataMgr.Instance.AddExcelBook(file.Name, new ExcelBook(file.Name, sheets));
                 excel.Dispose();
                 fileStream.Dispose();
@@ -74,6 +75,10 @@ namespace ConvertExcel
             }
         }
 
+        /**
+         * TODO sheet name cannot include #
+         * TODO first column cannot include # also;
+         */
         private bool ValidateSheet(ExcelWorksheet sheet)
         {
             return false;

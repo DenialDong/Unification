@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using OfficeOpenXml;
@@ -9,12 +10,16 @@ namespace ConvertExcel
     {
         private string m_LangBeanName = "Lang";
 
-        public void ReadFolder(string folderPath)
+        private ConcurrentBag<Task> Tasks = new ConcurrentBag<Task>();
+
+        public async Task ReadFolder(string folderPath)
         {
+            Tasks.Clear();
             ErrorMsgMgr.Instance.ClearErrorMsg();
             DirectoryInfo folder = new DirectoryInfo(folderPath);
             ReadBeanExcel(folderPath);
             ReadAllExcelData(folder);
+            await Task.WhenAll(Tasks);
         }
 
         private void ReadAllExcelData(DirectoryInfo folder)
@@ -39,7 +44,18 @@ namespace ConvertExcel
                     continue;
                 }
 
-                ReadOneExcel(file, folder.FullName);
+                Tasks.Add(Task.Run(() => 
+                {
+                    try
+                    {
+                        ReadOneExcel(file, folder.FullName);
+                    }
+                    catch(Exception ex)
+                    {
+                        // Handle the exception as appropriate, e.g., logging or storing it somewhere.
+                        ErrorMsgMgr.Instance.AddErrorMsg($"Failed to read {file.Name}: {ex.Message}");
+                    }
+                }));
             }
         }
 
@@ -306,6 +322,7 @@ namespace ConvertExcel
                         var separateList = GetColByIndex(col + bean.index, sheet);
                         list.AddRange(separateList);
                     }
+
                     break;
                 case BeanType.OneColumn:
                     var oneColumnList = GetLangInsideOneColumnBean(col, beanInfo, sheet);
@@ -341,6 +358,7 @@ namespace ConvertExcel
                     }
                 }
             }
+
             return list;
         }
 

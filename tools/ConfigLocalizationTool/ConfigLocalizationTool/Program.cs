@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using OfficeOpenXml;    
+using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Drawing;
 using System.Drawing;
@@ -13,13 +13,13 @@ namespace ConvertExcel
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            // var folderPath = @"D:\Kop\GitWorkSpace\configs";
-            var folderPath = args[0];
+            var folderPath = @"D:\Kop\GitWorkSpace\configs";
+            // var folderPath = args[0];
 
-            ReadExcel.Instance.ReadFolder(folderPath);
-            WriteExcel.Instance.WriteToFolder(folderPath);
+            await ReadExcel.Instance.ReadFolder(folderPath);
+            await WriteExcel.Instance.WriteToFolder(folderPath);
             ErrorMsgMgr.Instance.AutoPrintErrorOrSucces();
         }
     }

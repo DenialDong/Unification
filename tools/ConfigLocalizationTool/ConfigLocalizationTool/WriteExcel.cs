@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,11 @@ namespace ConvertExcel
             "LanguageTable_zh-cn.xlsx",
             "LanguageTable_zh-TW.xlsx",
         };
+        private ConcurrentBag<Task> Tasks = new ConcurrentBag<Task>();
 
-        public void WriteToFolder(string folderPath)
+        public async Task WriteToFolder(string folderPath)
         {
+            Tasks.Clear();
             folderPath = $"{folderPath}/LanguageTable";
             DirectoryInfo folder = new DirectoryInfo(folderPath);
             if (!folder.Exists)
@@ -36,11 +39,23 @@ namespace ConvertExcel
                 return;
             }
 
+            var langList = ExcelDataMgr.Instance.GetLangList();
             foreach (var langPath in langPathList)
             {
-                var langList = ExcelDataMgr.Instance.GetLangList();
-                WriteToTargetLanguage($"{folderPath}/{langPath}", langList);
+                Tasks.Add(Task.Run(() => 
+                {
+                    try
+                    {
+                        WriteToTargetLanguage($"{folderPath}/{langPath}", langList);
+                    }
+                    catch(Exception ex)
+                    {
+                        // Handle the exception as appropriate, e.g., logging or storing it somewhere.
+                        ErrorMsgMgr.Instance.AddErrorMsg($"Failed to read {langPath}: {ex.Message}");
+                    }
+                }));
             }
+            await Task.WhenAll(Tasks);
         }
 
         private void WriteToTargetLanguage(string path, HashSet<string> langList)

@@ -17,7 +17,7 @@ namespace ConvertExcel
         static async Task Main(string[] args)
         {
             // var folderPath =
-            //     @"D:\Kop\GitWorkSpace\configs\LanguageJson";
+            //     @"D:\Kop\GitWorkSpace\client\Unity\Assets\Scripts\Editor\KopEditor\TranslationLanguage";
             // var targetPath =
             //     @"D:\Kop\GitWorkSpace\configs\LanguageTable";
             var folderPath = args[0];

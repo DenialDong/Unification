@@ -1,0 +1,14 @@
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\bin\Debug\net7.0\ReplaceTableClass.exe
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\bin\Debug\net7.0\ReplaceTableClass.deps.json
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\bin\Debug\net7.0\ReplaceTableClass.runtimeconfig.json
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\bin\Debug\net7.0\ReplaceTableClass.dll
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\bin\Debug\net7.0\ReplaceTableClass.pdb
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.AssemblyInfoInputs.cache
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.AssemblyInfo.cs
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.csproj.CoreCompileInputs.cache
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.dll
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\refint\ReplaceTableClass.dll
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.pdb
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ReplaceTableClass.genruntimeconfig.cache
+C:\Users\wangh\Desktop\huidongWorkingArea\Unification\Unification\tools\ReplaceTableClass\ReplaceTableClass\ReplaceTableClass\obj\Debug\net7.0\ref\ReplaceTableClass.dll

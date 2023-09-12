@@ -9,6 +9,7 @@ namespace ConvertExcel
 {
     public sealed class WriteExcel : Singleton<WriteExcel>
     {
+        Dictionary<string, string> chineseExcelContent = new Dictionary<string, string>();
         private Dictionary<string, string> TypeCastDic = new Dictionary<string, string>
         {
             { "int", "number" },
@@ -35,7 +36,14 @@ namespace ConvertExcel
                 ErrorMsgMgr.Instance.AddErrorMsg($"{folderPath}不存在");
                 return;
             }
+
             var langPath = GetTargetFileName(fileName);
+            if (langPath == "")
+            {
+                ErrorMsgMgr.Instance.AddErrorMsg($"{fileName}是未知的名字");
+                return;
+            }
+
             WriteToTargetLanguage($"{folderPath}/{langPath}", JsonData);
         }
 
@@ -44,19 +52,63 @@ namespace ConvertExcel
             var targetFileName = name.Split('.');
             switch (targetFileName[0])
             {
-                case "LanguageTable_en":
+                case "language_en":
                     return "LanguageTable_en.xlsx";
-                case "LanguageTable_ja":
+                case "language_ja":
                     return "LanguageTable_ja.xlsx";
-                case "LanguageTable_ko":
+                case "language_ko":
                     return "LanguageTable_ko.xlsx";
-                case "LanguageTable_zh-cn":
+                case "language_zh-cn":
                     return "LanguageTable_zh-cn.xlsx";
-                case "LanguageTable_zh-TW":
+                case "language_zh-TW":
                     return "LanguageTable_zh-TW.xlsx";
             }
 
             return "";
+        }
+
+        public void ReadchineseExcel(string folderPath)
+        {
+            string excelPath = $"{folderPath}/LanguageTable_zh-cn.xlsx";
+            ExcelPackage excel = null;
+            Stream stream = null;
+            try
+            {
+                excel = new ExcelPackage($"{excelPath}");
+
+                var worksheet =
+                    excel.Workbook.Worksheets[0];
+                int lastRow = worksheet.Dimension.End.Row;
+
+                int startIndex = 1;
+                while (startIndex <= lastRow)
+                {
+                    var text = worksheet.Cells[startIndex, 1].Text;
+                    if (text != null && !text.Contains("##"))
+                    {
+                        break;
+                    }
+
+                    startIndex++;
+                }
+
+                for (int row = startIndex; row <= lastRow; row++)
+                {
+                    chineseExcelContent[worksheet.Cells[row, 2].Text] = worksheet.Cells[row, 3].Text;
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMsgMgr.Instance.AddErrorMsg(
+                    $"LanguageTable_zh-cn.xlsx读表出错, 检查是否Excel是否在另外的进程中打开\n 详细信息:\n{e}\n\n");
+            }
+            finally
+            {
+                if (excel != null)
+                    excel.Dispose();
+                if (stream != null)
+                    stream.Dispose();
+            }
         }
 
         private void WriteToTargetLanguage(string path, Dictionary<string, object> langJsonData)
@@ -108,7 +160,7 @@ namespace ConvertExcel
 
                 foreach (var lang in langJsonData)
                 {
-                    if (!excelContent.ContainsKey(lang.Key))
+                    if (!excelContent.ContainsKey(lang.Key) && chineseExcelContent.ContainsKey(lang.Key))
                     {
                         worksheet.Cells[i, 2].Value = lang.Key;
                         worksheet.Cells[i, 3].Value = lang.Value;

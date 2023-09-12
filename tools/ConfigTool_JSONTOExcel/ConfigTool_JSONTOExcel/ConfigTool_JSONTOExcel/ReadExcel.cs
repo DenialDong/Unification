@@ -16,6 +16,7 @@ namespace ConvertExcel
 
         public void ReadFolder(string folderPath, string targetPath)
         {
+            WriteExcel.Instance.ReadchineseExcel(targetPath);
             DirectoryInfo folder = new DirectoryInfo(folderPath);
             foreach (FileInfo file in folder.GetFiles("*.json"))
             {
